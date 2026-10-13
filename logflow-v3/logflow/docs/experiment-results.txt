@@ -1,0 +1,51 @@
+Girdi: 1,000,000 satır, 85,706,920 bayt, Java 21.0.12.1, 2 işlemci
+
+### DOSYA modu (oku+ayrıştır+yaz dahil) — Deney 1: status>=400 ve path^/api (ucuz koşullar)
+| Sıra | medyan ms | en iyi ms | filtre değerlendirmeleri (1., 2., ...) | yazılan | çıktı özeti |
+|---|---:|---:|---|---:|---|
+| A: status -> path | 2029 | 1662 | [1000000, 90294] | 49,709 | 9fd7667725ca |
+| B: path -> status | 2108 | 1688 | [1000000, 549316] | 49,709 | 9fd7667725ca |
+→ çıktılar AYNI
+→ B/A süre oranı (medyan): 1.04
+
+### DOSYA modu (oku+ayrıştır+yaz dahil) — Deney 2: status>=400 ve path~regex (pahalı koşul)
+| Sıra | medyan ms | en iyi ms | filtre değerlendirmeleri (1., 2., ...) | yazılan | çıktı özeti |
+|---|---:|---:|---|---:|---|
+| A: status -> regex | 1796 | 1675 | [1000000, 90294] | 49,709 | 9fd7667725ca |
+| B: regex -> status | 2107 | 1923 | [1000000, 549316] | 49,709 | 9fd7667725ca |
+→ çıktılar AYNI
+→ B/A süre oranı (medyan): 1.17
+
+### DOSYA modu (oku+ayrıştır+yaz dahil) — Deney 3: projeksiyon(timestamp,status,path) ve status>=400
+| Sıra | medyan ms | en iyi ms | filtre değerlendirmeleri (1., 2., ...) | yazılan | çıktı özeti |
+|---|---:|---:|---|---:|---|
+| A: filtre -> projeksiyon | 1846 | 1679 | [1000000] | 90,294 | 526d29fbafab |
+| B: projeksiyon -> filtre | 2087 | 1896 | [1000000] | 90,294 | 526d29fbafab |
+→ çıktılar AYNI
+→ B/A süre oranı (medyan): 1.13
+
+### BELLEK modu (yalnızca aşamalar) — Deney 1: status>=400 ve path^/api (ucuz koşullar)
+| Sıra | medyan ms | en iyi ms | filtre değerlendirmeleri (1., 2., ...) | yazılan | çıktı özeti |
+|---|---:|---:|---|---:|---|
+| A: status -> path | 76 | 68 | [1000000, 90294] | 49,709 | 3f6984caba47 |
+| B: path -> status | 86 | 81 | [1000000, 549316] | 49,709 | 3f6984caba47 |
+→ çıktılar AYNI
+→ B/A süre oranı (medyan): 1.13
+
+### BELLEK modu (yalnızca aşamalar) — Deney 2: status>=400 ve path~regex (pahalı koşul)
+| Sıra | medyan ms | en iyi ms | filtre değerlendirmeleri (1., 2., ...) | yazılan | çıktı özeti |
+|---|---:|---:|---|---:|---|
+| A: status -> regex | 102 | 91 | [1000000, 90294] | 49,709 | 3f6984caba47 |
+| B: regex -> status | 171 | 165 | [1000000, 549316] | 49,709 | 3f6984caba47 |
+→ çıktılar AYNI
+→ B/A süre oranı (medyan): 1.68
+
+### BELLEK modu (yalnızca aşamalar) — Deney 3: projeksiyon(timestamp,status,path) ve status>=400
+| Sıra | medyan ms | en iyi ms | filtre değerlendirmeleri (1., 2., ...) | yazılan | çıktı özeti |
+|---|---:|---:|---|---:|---|
+| A: filtre -> projeksiyon | 98 | 79 | [1000000] | 90,294 | 2c5196808f2a |
+| B: projeksiyon -> filtre | 196 | 185 | [1000000] | 90,294 | 2c5196808f2a |
+→ çıktılar AYNI
+→ B/A süre oranı (medyan): 2.00
+
+SONUÇ: tüm sıralamalarda çıktılar bayt bayt aynı.
